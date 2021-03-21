@@ -17,9 +17,12 @@ use App\Http\Controllers\NewsController;
 
 Route::group(['middleware' => "CheckUser"],function(){
     Route::get('/getNews/{category}/{noOfData}',[NewsController::class , 'getNews']);
-    Route::post('/bookmark',[NewsController::class , 'bookmark']);
-    Route::post('/unBookmark',[NewsController::class , 'unBookmark']);
+    Route::post('/bookmark',[NewsController::class , 'bookmark']); //news_id , in header user_id
+    Route::post('/unBookmark',[NewsController::class , 'unBookmark']); //news_id , in header user_id
+    Route::get('/getBookmark',[NewsController::Class , 'getBookmark']);
+    Route::get('/bookmarkDetail/{bookmark_id}',[NewsController::Class , 'bookmarkDetail']);
 });
+Route::post('/register' , [NewsController::Class , 'register']); //user_id
 Route::get('/setNewsOnDb',[NewsController::class , 'setNewsOnDb']);
 Route::fallback(function(){
     return response()->json([

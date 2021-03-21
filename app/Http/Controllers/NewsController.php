@@ -10,6 +10,21 @@ use App\Models\User;
 
 class NewsController extends Controller
 {
+    public function register(Request $request){
+        if(User::where('user_id',$request->user_id)->get()->first()){
+            return response()->json([
+                'status' => false,
+                'msg' => "Already Registered!!"
+            ]);
+        }
+        $user = new User();
+        $user->user_id = $request->user_id;
+        $user->save();
+        return response()->json([
+            'status' => true,
+            'msg' => 'User Registered!!'
+        ]);
+    }
     public function getNews($category , $noOfData){
         $news = News::latest()->where('category',$category)->take($noOfData)->get();
         if(count($news)){
@@ -32,22 +47,25 @@ class NewsController extends Controller
             $response = Http::get('https://newsapi2812.herokuapp.com/en/'.$categories[$i].'/5');
             $news = json_decode($response)[0];
             foreach ($news as $key => $value) {
-                $newsData = [
-                    "category" => $categories[$i],
-                    "title" => $value->title,
-                    "author" => $value->author,
-                    "content" => $value->content,
-                    "sourceURL" => $value->sourceURL,
-                    "imgsrc" => $value->imgsrc,
-                    "postedAt" => $value->postedAt,
-                    'created_at' =>now()->toDateTimeString(),
-                    'updated_at' => now()->toDateTimeString()
-                ];
-                array_push($data , $newsData);
+                $news = News::where('title',$value->title)->get();
+                if(count($news) == 0){
+                    $newsData = [
+                        "category" => $categories[$i],
+                        "title" => $value->title,
+                        "author" => $value->author,
+                        "content" => $value->content,
+                        "sourceURL" => $value->sourceURL,
+                        "imgsrc" => $value->imgsrc,
+                        "postedAt" => $value->postedAt,
+                        'created_at' =>now()->toDateTimeString(),
+                        'updated_at' => now()->toDateTimeString()
+                    ];
+                    array_push($data , $newsData);
+                }
             }
         }
         $chunks = array_chunk($data , 50);
-        foreach ($chunks as $key => $value) {
+        foreach ($chunks as $key => $value){
             News::insert($value);
         }
         return response()->json([
@@ -115,6 +133,49 @@ class NewsController extends Controller
             return response()->json([
                 'status' => false,
                 'msg' => "Something Went Wrong!!"
+            ]);
+        }
+    }
+
+    public function getBookmark(Request $request){
+        $bookmark_ids = User::where('user_id' , $request->header('user_id'))->get()->first()->bookmarks;
+        if($bookmark_ids != null){
+            $bookmark_id = explode(',',$bookmark_ids);
+            $data = array();
+            for ($i=0; $i < count($bookmark_id); $i++) { 
+                $news = News::where('id',$bookmark_id[$i])->get()->first();
+                array_push($data , $news);
+            }
+            if(count($data)){
+                return response()->json([
+                    'status' => true,
+                    'data' => $data
+                ]);
+            }else{
+                return response()->json([
+                    'status' => false,
+                    'msg' => 'Something Went Wrong!!'
+                ]);
+            }
+        }else{
+            return response()->json([
+                'status' => false,
+                'msg' => 'Something Went Wrong!!'
+            ]);
+        } 
+    }
+
+    public function bookmarkDetail($bookmark_id){
+        $news = News::where('id' , $bookmark_id)->get()->first();
+        if($news){
+            return response()->json([
+                'status' => true,
+                'data' => $news
+            ]);
+        }else{
+            return response()->json([
+                'status' => false,
+                'msg' => "Something Went Wrong"
             ]);
         }
     }
