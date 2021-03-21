@@ -4,23 +4,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NewsController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+
 
 Route::group(['middleware' => "CheckUser"],function(){
-    Route::get('/getNews/{category}/{noOfData}',[NewsController::class , 'getNews']);
+    Route::get('/getNews/{category}/{noOfData}',[NewsController::class , 'getNews']);//in header user_id , category and noOfData
     Route::post('/bookmark',[NewsController::class , 'bookmark']); //news_id , in header user_id
     Route::post('/unBookmark',[NewsController::class , 'unBookmark']); //news_id , in header user_id
-    Route::get('/getBookmark',[NewsController::Class , 'getBookmark']);
-    Route::get('/bookmarkDetail/{bookmark_id}',[NewsController::Class , 'bookmarkDetail']);
+    Route::get('/getBookmark',[NewsController::Class , 'getBookmark']); //in header user_id
+    Route::get('/bookmarkDetail/{bookmark_id}',[NewsController::Class , 'bookmarkDetail']); //in header user_id
 });
 Route::post('/register' , [NewsController::Class , 'register']); //user_id
 Route::get('/setNewsOnDb',[NewsController::class , 'setNewsOnDb']);
