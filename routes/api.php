@@ -15,4 +15,15 @@ use App\Http\Controllers\NewsController;
 |
 */
 
-Route::get('/currentNews/{category}/{noOfData}',[NewsController::class , 'currentNews']);
+Route::group(['middleware' => "CheckUser"],function(){
+    Route::get('/getNews/{category}/{noOfData}',[NewsController::class , 'getNews']);
+    Route::post('/bookmark',[NewsController::class , 'bookmark']);
+    Route::post('/unBookmark',[NewsController::class , 'unBookmark']);
+});
+Route::get('/setNewsOnDb',[NewsController::class , 'setNewsOnDb']);
+Route::fallback(function(){
+    return response()->json([
+        'status' => false,
+        'msg' => "Route Not Found"
+    ]);
+});
