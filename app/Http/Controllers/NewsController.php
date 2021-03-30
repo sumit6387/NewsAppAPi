@@ -64,7 +64,7 @@ class NewsController extends Controller
                 }
             }
         }
-        $chunks = array_chunk($data , 50);
+        $chunks = array_chunk($data , 80);
         foreach ($chunks as $key => $value){
             News::insert($value);
         }
@@ -117,7 +117,6 @@ class NewsController extends Controller
                 $arr = implode(',',$res);
                 $user->bookmarks = $arr;
                 $user->save();
-
                 return response()->json([
                     'status' => true,
                     'msg' => "Bookmark Removed"
@@ -176,6 +175,98 @@ class NewsController extends Controller
             return response()->json([
                 'status' => false,
                 'msg' => "Something Went Wrong"
+            ]);
+        }
+    }
+
+    public function like(Request $request){
+        $user_id = $request->header('user_id');
+        $user = User::where('user_id',$user_id)->get()->first()->id;
+        $news = News::where('id',$request->news_id)->get()->first();
+        if($user && $news){
+            if($news->likes == null){
+                $news->likes = $user.",";
+            }else{
+                $news->likes = $news->likes."".$user.",";
+            }
+            $news->update();
+            return response()->json([
+                'status' => true,
+                'msg' => "You Like The News!!"
+            ]);
+        }else{
+            return response()->json([
+                'status' => false,
+                'msg' => "Something Went Wrong"
+            ]);
+        }
+    }
+
+    public function disLike(Request $request){
+        $user_id = $request->header('user_id');
+        $user = User::where('user_id',$user_id)->get()->first()->id;
+        $news = News::where('id',$request->news_id)->get()->first();
+        if($user && $news){
+            if($news->likes == null){
+                return response()->json([
+                    'status' => false,
+                    'msg' => "Something Went Wrong"
+                ]);
+            }else{
+                $users = explode(',',$news->likes);
+                if(in_array($user,$users)){
+                    $arr = array_diff($users , [$user]);
+                    $news->likes = implode(',',$arr);
+                    $news->update();
+                    return response()->json([
+                        'status' => true,
+                        'msg' => "You Dislike The News!!"
+                    ]);
+                }else{
+                    return response()->json([
+                        'status' => false,
+                        'msg' => "Something Went Wrong"
+                    ]);
+                }
+            }
+            $news->update();
+            return response()->json([
+                'status' => true,
+                'msg' => "You Like The Post!!"
+            ]);
+        }else{
+            return response()->json([
+                'status' => false,
+                'msg' => "Something Went Wrong"
+            ]);
+        }
+    }
+
+    public function getRandomNews(Request $req){
+        $categories = ['national','business','sports','world','politics','technology','startup','entertainment','miscellaneous','hatke','automobile'];
+        $newsArr = array();
+        $user_id = User::where('user_id',$req->header('user_id'))->get()->first()->id;
+        for ($i=0; $i < count($categories); $i++) { 
+            $news = News::latest()->where('category',$categories[$i])->take(5)->get();
+            foreach ($news as $key => $value) {
+                $arr = explode(',',$value->likes);
+                $value->userLiked = false;
+                if(in_array($user_id , $arr)){
+                    $value->userLiked = true;
+                }
+                array_push($newsArr,$value);
+            }
+        }
+        shuffle($newsArr);
+        if($newsArr){
+            return response()->json([
+                'status' => true,
+                "data" => $newsArr
+            ]);
+        }else{
+            return response()->json([
+                'status' => false,
+                "msg" => "No Data Found!!"
             ]);
         }
     }
