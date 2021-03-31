@@ -43,6 +43,7 @@ class NewsController extends Controller
             $user_id = User::where('token',$req->header('Authorization'))->get()->first()->id;
             foreach ($news as $key => $value) {
                 $arr = explode(',',$value->likes);
+                $value->likes = count($arr)-1;
                 $value->userLiked = false;
                 if(in_array($user_id , $arr)){
                     $value->userLiked = true;
@@ -81,7 +82,7 @@ class NewsController extends Controller
                         "author" => $value->author,
                         "content" => str_replace('\'',"",$value->content),
                         "sourceURL" => $value->sourceURL,
-                        "imgsrc" => $value->imgsrc,
+                        "imgsrc" => str_replace("'","",$value->imgsrc),
                         "postedAt" => $value->postedAt,
                         'created_at' =>now()->toDateTimeString(),
                         'updated_at' => now()->toDateTimeString()
@@ -169,7 +170,8 @@ class NewsController extends Controller
             $data = array();
             for ($i=0; $i < count($bookmark_id); $i++) { 
                 $news = News::where('id',$bookmark_id[$i])->get()->first();
-                $arr = explode(',',$news);
+                $arr = explode(',',$news->likes);
+                $news->likes = count($arr)-1;
                 $news->userLiked = false;
                 if(in_array($bookmark_ids , $arr)){
                     $news->userLiked = true;
@@ -271,6 +273,7 @@ class NewsController extends Controller
             $news = News::latest()->where('category',$categories[$i])->take(5)->get();
             foreach ($news as $key => $value) {
                 $arr = explode(',',$value->likes);
+                $value->likes = count($arr)-1;
                 $value->userLiked = false;
                 if(in_array($user_id , $arr)){
                     $value->userLiked = true;
