@@ -79,7 +79,7 @@ class NewsController extends Controller
                         "category" => $categories[$i],
                         "title" => $value->title,
                         "author" => $value->author,
-                        "content" => $value->content,
+                        "content" => str_replace('\'',"",$value->content),
                         "sourceURL" => $value->sourceURL,
                         "imgsrc" => $value->imgsrc,
                         "postedAt" => $value->postedAt,
@@ -90,7 +90,7 @@ class NewsController extends Controller
                 }
             }
         }
-        $chunks = array_chunk($data , 80);
+        $chunks = array_chunk($data , 50);
         foreach ($chunks as $key => $value){
             News::insert($value);
         }
