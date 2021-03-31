@@ -13,19 +13,21 @@ class NewsController extends Controller
     public function register(Request $request){
         $user = User::where('user_id',$request->user_id)->get()->first();
         if($user){
+            $token = explode(' ',$user->token);
             return response()->json([
                 'status' => false,
-                'token' => $user->token
+                'token' => $token[1]
             ]);
         }
-        $token = "Bearer ASDBF".rand(111111111111111,999999999999999)."CQWE";
+        $tok = "ASDBF".rand(111111111111111,999999999999999)."CQWE";
+        $token = "Bearer ".$tok;
         $user = new User();
         $user->user_id = $request->user_id;
         $user->token = $token;
         if($user->save()){
             return response()->json([
                 'status' => true,
-                'token' => $token
+                'token' => $tok
             ]);
         }else{
             return response()->json([
