@@ -34,8 +34,8 @@ class NewsController extends Controller
             ]);
         }
     }
-    public function getNews(Request $req,$category , $noOfData){
-        $news = News::orderby('id','desc')->where('category',$category)->take($noOfData)->get();
+    public function getNews(Request $req,$category,$page){
+        $news = News::orderby('id','desc')->where('category',$category)->get();
         if(count($news)){
             $newsArr = array();
             $user_id = User::where('token',$req->header('token'))->get()->first()->id;
@@ -45,6 +45,11 @@ class NewsController extends Controller
                 if(in_array($user_id , $arr)){
                     $value->userLiked = true;
                 }
+                array_push($newsArr,$value);
+            }
+            $news = collect($newsArr)->forPage($page,10);
+            $newsArr = array();
+            foreach ($news as $key => $value) {
                 array_push($newsArr,$value);
             }
             return response()->json([
@@ -155,16 +160,26 @@ class NewsController extends Controller
         }
     }
 
-    public function getBookmark(Request $request){
+    public function getBookmark(Request $request,$page){
         $bookmark_ids = User::where('token' , $request->header('token'))->get()->first()->bookmarks;
         if($bookmark_ids != null){
             $bookmark_id = explode(',',$bookmark_ids);
             $data = array();
             for ($i=0; $i < count($bookmark_id); $i++) { 
                 $news = News::where('id',$bookmark_id[$i])->get()->first();
+                $arr = explode(',',$news);
+                $news->userLiked = false;
+                if(in_array($bookmark_ids , $arr)){
+                    $news->userLiked = true;
+                }
                 array_push($data , $news);
             }
             if(count($data)){
+                $news = collect($data)->forPage($page,10);
+                $data = array();
+                foreach ($news as $key => $value) {
+                    array_push($data,$value);
+                }
                 return response()->json([
                     'status' => true,
                     'data' => $data
@@ -181,21 +196,6 @@ class NewsController extends Controller
                 'msg' => 'Something Went Wrong!!'
             ]);
         } 
-    }
-
-    public function bookmarkDetail($bookmark_id){
-        $news = News::where('id' , $bookmark_id)->get()->first();
-        if($news){
-            return response()->json([
-                'status' => true,
-                'data' => $news
-            ]);
-        }else{
-            return response()->json([
-                'status' => false,
-                'msg' => "Something Went Wrong"
-            ]);
-        }
     }
 
     public function like(Request $request){
@@ -261,7 +261,7 @@ class NewsController extends Controller
         }
     }
 
-    public function getRandomNews(Request $req){
+    public function getRandomNews(Request $req,$page){
         $categories = ['national','business','sports','world','politics','technology','startup','entertainment','miscellaneous','hatke','automobile'];
         $newsArr = array();
         $user_id = User::where('token',$req->header('token'))->get()->first()->id;
@@ -278,6 +278,11 @@ class NewsController extends Controller
         }
         shuffle($newsArr);
         if($newsArr){
+            $news = collect($newsArr)->forPage($page,10);
+            $newsArr = array();
+            foreach ($news as $key => $value) {
+                array_push($newsArr,$value);
+            }
             return response()->json([
                 'status' => true,
                 "data" => $newsArr
