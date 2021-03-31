@@ -16,8 +16,8 @@ class CheckUser
      */
     public function handle(Request $request, Closure $next)
     {
-        $headers = $request->header('user_id');
-        $user = User::where('user_id',$headers)->get()->first();
+        $headers = $request->header('token');
+        $user = User::where('token',$headers)->get()->first();
         if(!$user){
             return response()->json([
                 'status' => false,
