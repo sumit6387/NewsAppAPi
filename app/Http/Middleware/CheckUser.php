@@ -16,7 +16,7 @@ class CheckUser
      */
     public function handle(Request $request, Closure $next)
     {
-        $headers = $request->header('token');
+        $headers = $request->header('Authorization');
         $user = User::where('token',$headers)->get()->first();
         if(!$user){
             return response()->json([

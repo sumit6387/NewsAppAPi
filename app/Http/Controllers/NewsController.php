@@ -18,7 +18,7 @@ class NewsController extends Controller
                 'token' => $user->token
             ]);
         }
-        $token = "ASDBF".rand(111111111111111,999999999999999)."CQWE";
+        $token = "Bearer ASDBF".rand(111111111111111,999999999999999)."CQWE";
         $user = new User();
         $user->user_id = $request->user_id;
         $user->token = $token;
@@ -38,7 +38,7 @@ class NewsController extends Controller
         $news = News::orderby('id','desc')->where('category',$category)->get();
         if(count($news)){
             $newsArr = array();
-            $user_id = User::where('token',$req->header('token'))->get()->first()->id;
+            $user_id = User::where('token',$req->header('Authorization'))->get()->first()->id;
             foreach ($news as $key => $value) {
                 $arr = explode(',',$value->likes);
                 $value->userLiked = false;
@@ -99,7 +99,7 @@ class NewsController extends Controller
     }
 
     public function bookmark(Request $request){
-        $token  = $request->header('token');
+        $token  = $request->header('Authorization');
         $user = User::where('token' , $token)->get()->first();
         $news = News::where('id',$request->news_id)->get()->first();
         if($news){
@@ -131,7 +131,7 @@ class NewsController extends Controller
     }
 
     public function unBookMark(Request $request){
-        $token  = $request->header('token');
+        $token  = $request->header('Authorization');
         $user = User::where('token' , $token)->get()->first();
         $news = News::where('id',$request->news_id)->get()->first();
         if($news){
@@ -161,7 +161,7 @@ class NewsController extends Controller
     }
 
     public function getBookmark(Request $request,$page){
-        $bookmark_ids = User::where('token' , $request->header('token'))->get()->first()->bookmarks;
+        $bookmark_ids = User::where('token' , $request->header('Authorization'))->get()->first()->bookmarks;
         if($bookmark_ids != null){
             $bookmark_id = explode(',',$bookmark_ids);
             $data = array();
@@ -199,7 +199,7 @@ class NewsController extends Controller
     }
 
     public function like(Request $request){
-        $user_id = $request->header('token');
+        $user_id = $request->header('Authorization');
         $user = User::where('token',$user_id)->get()->first()->id;
         $news = News::where('id',$request->news_id)->get()->first();
         if($user && $news){
@@ -222,7 +222,7 @@ class NewsController extends Controller
     }
 
     public function disLike(Request $request){
-        $user_id = $request->header('token');
+        $user_id = $request->header('Authorization');
         $user = User::where('token',$user_id)->get()->first()->id;
         $news = News::where('id',$request->news_id)->get()->first();
         if($user && $news){
@@ -264,7 +264,7 @@ class NewsController extends Controller
     public function getRandomNews(Request $req,$page){
         $categories = ['national','business','sports','world','politics','technology','startup','entertainment','miscellaneous','hatke','automobile'];
         $newsArr = array();
-        $user_id = User::where('token',$req->header('token'))->get()->first()->id;
+        $user_id = User::where('token',$req->header('Authorization'))->get()->first()->id;
         for ($i=0; $i < count($categories); $i++) { 
             $news = News::latest()->where('category',$categories[$i])->take(5)->get();
             foreach ($news as $key => $value) {
