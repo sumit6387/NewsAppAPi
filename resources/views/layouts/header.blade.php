@@ -78,13 +78,13 @@
                           <i class="icon_genius"></i>
                           <span>Register Admin</span>
                       </a>
-          </li>
-          <li class="sub-menu">
-            <a href="{{url('/addMoney')}}" class="">
-                          <i class="icon_table"></i>
-                          <span>Money Management</span>
-                      </a>
           </li>-->
+          <li class="sub-menu">
+            <a href="{{url('/category')}}" class="">
+                          <i class="icon_table"></i>
+                          <span>Trending Category</span>
+                      </a>
+          </li>
           <li class="sub-menu">
             <a href="{{url('/authers')}}" class="">
                           <i class="icon_table"></i>

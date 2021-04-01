@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
 use App\Models\Auther;
+use App\Models\TrendingCategory;
 
 class AdminShowController extends Controller
 {
@@ -31,5 +32,15 @@ class AdminShowController extends Controller
             }else{
                 return Redirect::to(url('/authers'));
             }
+        }
+
+        public function category(){
+            $categories = TrendingCategory::orderby('id','desc')->get();
+            return view('category',['categories' => $categories]);
+        }
+
+        public function editcategory($category_id){
+            $category = TrendingCategory::where('id',$category_id)->get()->first();
+            return view('editcategory',['category'=>$category]);
         }
 }
