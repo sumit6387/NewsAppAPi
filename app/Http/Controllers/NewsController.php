@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\News;
 use App\Models\User;
+use App\Models\TrendingNews;
+use App\Models\TrendingCategory;
 
 
 class NewsController extends Controller
@@ -298,5 +300,46 @@ class NewsController extends Controller
                 "msg" => "No Data Found!!"
             ]);
         }
+    }
+
+    public function getTrandingNewsCategory(){
+        $category = TrendingCategory::orderby('id','desc')->take(3)->get();
+        if($category){
+            return response()->json([
+                'status' => true,
+                'data' => $category
+            ]);
+        }else{
+            return response()->json([
+                'status' => false,
+                'msg' => "No Data Found!!"
+            ]);
+        }
+    }
+
+    public function getTrendingNews(Request $request,$category,$page){
+        $trendingNews = TrendingNews::orderby('id','desc')->where('category',$category)->get();
+        if($trendingNews){
+            $user_id = User::where('token',$request->header('Authorization'))->get()->first()->id;
+            $arrNews = array();
+            foreach ($trendingNews as $value) {
+                $arr = explode(',',$value->likes);
+                $value->likes = count($arr)-1;
+                $value->userLiked = false;
+                if(in_array($user_id,$arr)){
+                    $value->userLiked = true;
+                }
+                array_push($arrNews,$value);
+            }
+            return response()->json([
+                'status' => true,
+                'data' => collect($arrNews)->forPage($page,10)
+            ]);
+        }else{
+            return response()->json([
+                'status' => false,
+                'msg' => "No Data Found!!"
+            ]);
+        }    
     }
 }
