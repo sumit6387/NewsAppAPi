@@ -86,6 +86,7 @@ class NewsController extends Controller
                         "sourceURL" => $value->sourceURL,
                         "imgsrc" => str_replace("'","",$value->imgsrc),
                         "postedAt" => $value->postedAt,
+                        "status" => 1,
                         'created_at' =>now()->toDateTimeString(),
                         'updated_at' => now()->toDateTimeString()
                     ];
@@ -208,6 +209,9 @@ class NewsController extends Controller
         $user_id = $request->header('Authorization');
         $user = User::where('token',$user_id)->get()->first()->id;
         $news = News::where('id',$request->news_id)->get()->first();
+        if(!$request->news_type == 'trending'){
+            $news = TrendingNews::where('id',$request->news_id)->get()->first();
+        }
         if($user && $news){
             if($news->likes == null){
                 $news->likes = $user.",";
@@ -231,6 +235,9 @@ class NewsController extends Controller
         $user_id = $request->header('Authorization');
         $user = User::where('token',$user_id)->get()->first()->id;
         $news = News::where('id',$request->news_id)->get()->first();
+        if(!$request->news_type == 'trending'){
+            $news = TrendingNews::where('id',$request->news_id)->get()->first();
+        }
         if($user && $news){
             if($news->likes == null){
                 return response()->json([

@@ -10,8 +10,7 @@ use App\Http\Controllers\Auther\AutherController;
 
 Route::get('/',[AdminLoginController::Class , 'login']);
 Route::post('/loginPro' , [AdminLoginController::class , 'loginPro']);
-Route::view('/learner/become-auther','writer.become-writer');
-Route::post('/learner/becomeAuther',[AutherController::class , 'becomeAuther']);
+
 
 Route::group(['middleware' => "CheckAdmin"] , function(){
     Route::get('/dashboard' , [AdminController::class , 'dashboard']);
@@ -24,7 +23,7 @@ Route::group(['middleware' => "CheckAdmin"] , function(){
     Route::view('/authers' , 'authers');
     Route::get('/getAuther',[AdminShowController::class , 'getAuther']);
     Route::get('/deleteAuther/{auther_id}',[AdminShowController::class , 'deleteAuther']);
-    Route::get('/acceptAutherRequest/{autrher_id}',[AdminController::class , 'acceptAutherRequest']); //not done
+    Route::get('/acceptAutherRequest/{autrher_id}',[AdminController::class , 'acceptAutherRequest']); 
 
     // for trending Category
     Route::get('/category',[AdminShowController::class , 'category']);
@@ -34,4 +33,20 @@ Route::group(['middleware' => "CheckAdmin"] , function(){
     Route::post('/editCategoryProcess',[AdminController::class,'editCategoryProcess']);
 
     Route::get('/logout',[AdminLoginController::class , 'logout']);
+});
+
+// for auther
+Route::view('/learner/become-auther','writer.become-writer');
+Route::get('/auther/auther-login',[AutherController::class ,'login']);
+Route::post('/learner/becomeAuther',[AutherController::class , 'becomeAuther']);
+Route::post('/auther/autherLogin',[AutherController::class , 'autherLogin']);
+
+Route::group(['middleware' => "CheckAuther","prefix" => "auther"],function(){
+    Route::get('/dashboard',[AutherController::class,'dashboard']);
+    Route::get('writeNews',[AutherController::class , 'writeNews']);
+    Route::get('/logout',[AutherController::class , 'logout']);
+    Route::post('/submit-post' ,[AutherController::class , 'submitPost']);
+});
+Route::fallback(function(){
+    return view('404');
 });

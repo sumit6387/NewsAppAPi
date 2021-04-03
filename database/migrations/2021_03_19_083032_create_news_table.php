@@ -22,6 +22,8 @@ class CreateNewsTable extends Migration
             $table->string('postedAt');
             $table->string('sourceURL');
             $table->string('imgsrc');
+            $table->string('status')->default(false);
+            $table->string('writtenBy')->nullable();
             $table->longText('likes')->nullable();
             $table->timestamps();
         });

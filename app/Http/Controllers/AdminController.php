@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Hash;
 USE App\Models\Auther;
 USE App\Models\TrendingCategory;
+use Illuminate\Support\Str;
+use Mail;
 
 class AdminController extends Controller
 {
@@ -14,7 +17,24 @@ class AdminController extends Controller
     }
 
     public function acceptAutherRequest($auther_id){
-        dd(Auther::where('auther_id',$auther_id)->get()->first());
+        $auther = Auther::where('auther_id',$auther_id)->get()->first();
+        if($auther){
+            $password = Str::random(10);
+            $to_name = $auther->name;
+            $to_email = $auther->email;
+            $data = ['name'=>$to_name,"email" => $to_email,"password" => $password];
+            Mail::send('emails.accountVerificationEmail', $data, function($message) use ($to_name, $to_email) {
+                $message->to($to_email, $to_name)
+                ->subject('Account Verification As A Auther On Instant News');
+                $message->from('funtoos456@gmail.com','Instant News');
+            });
+            $auther->password = Hash::make($password);
+            $auther->approved = 1;
+            $auther->save();
+            return Redirect::to(url('/authers'));
+        }else{
+            return Redirect::to(url('/authers'));
+        }
     }
 
     public function deleteCategory($category_id){

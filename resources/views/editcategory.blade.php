@@ -16,7 +16,6 @@
           <div class="col-md-8">
           <?php $id = Request::segment(2); ?>
           <?php  if(isset($_GET['msg'])){
-              
               ?>
                     <div style="color:red;"><?php echo $_GET['msg']; ?></div>
                     <script>

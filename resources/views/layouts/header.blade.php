@@ -71,14 +71,14 @@
                           <i class="icon_document_alt"></i>
                           <span>Add Match</span>
                       </a>
-          </li>
+          </li>-->
           
           <li>
-            <a class="" href="{{url('/register')}}">
+            <a class="" href="{{url('/authersPost')}}">
                           <i class="icon_genius"></i>
-                          <span>Register Admin</span>
+                          <span>Post By Author</span>
                       </a>
-          </li>-->
+          </li>
           <li class="sub-menu">
             <a href="{{url('/category')}}" class="">
                           <i class="icon_table"></i>
