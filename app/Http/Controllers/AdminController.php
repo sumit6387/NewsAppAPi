@@ -5,10 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Hash;
-USE App\Models\Auther;
-USE App\Models\TrendingCategory;
+use App\Models\Auther;
+use App\Models\TrendingCategory;
+use App\Models\TrendingNews;
+use App\Models\AutherHistory;
+use App\Models\News;
+use App\Models\Withdraw;
 use Illuminate\Support\Str;
 use Mail;
+use Validator;
 
 class AdminController extends Controller
 {
@@ -25,7 +30,7 @@ class AdminController extends Controller
             $data = ['name'=>$to_name,"email" => $to_email,"password" => $password];
             Mail::send('emails.accountVerificationEmail', $data, function($message) use ($to_name, $to_email) {
                 $message->to($to_email, $to_name)
-                ->subject('Account Verification As A Auther On Instant News');
+                ->subject('Account Verification As An Auther On Instant News');
                 $message->from('funtoos456@gmail.com','Instant News');
             });
             $auther->password = Hash::make($password);
@@ -87,5 +92,54 @@ class AdminController extends Controller
         }
     }
 
+    public function approvePost(Request $request){
+        $valid = Validator::make($request->all() , ["amount" => "required"]);
+        if($valid->passes()){
+            $auther = Auther::where('auther_id',$request->auther_id)->get()->first();
+            $categories = ['national','business','sports','world','politics','technology','startup','entertainment','miscellaneous','hatke','automobile'];
+            if(in_array($request->category , $categories)){
+                $news = News::where('id',$request->news_id)->get()->first();
+            }else{
+                $news = TrendingNews::where('id',$request->news_id)->get()->first();
+            }
+            if($auther && $news){
+                $news->status = 1;
+                $news->save();
+                $history = new AutherHistory();
+                $history->auther_id = $news->writtenBy;
+                $history->category = $news->category;
+                $history->news_id = $news->id;
+                $history->amount = $request->amount;
+                $history->save();
+                $auther->amount = $auther->amount + $request->amount;
+                $auther->save();
+                return response()->json([
+                    'status' => true,
+                    'msg' => "Amount Added To Auther's Account!!"
+                ]);
+            }else{
+                return response()->json([
+                    'status' => false,
+                    'msg' => "Something Went Wrong!!"
+                ]);
+            }
+        }else{
+            return response()->json([
+                'status' => false,
+                'msg' => $valid->errors()->all()
+            ]);
+        }
+    }
+
+    public function withdrawDone($withdrawId){
+        $withdraw = Withdraw::where('id',$withdrawId)->get()->first();
+        if($withdraw){
+            $withdraw->status = 1;
+            $withdraw->save();
+            return Redirect::to(url('/withdraw'));
+        }else{
+            return Redirect::to(url('/withdraw'));
+        }
+    }
 
 }

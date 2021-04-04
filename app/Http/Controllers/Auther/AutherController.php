@@ -10,8 +10,11 @@ use App\Models\Auther;
 use App\Models\News;
 use App\Models\TrendingNews;
 use App\Models\TrendingCategory;
+use App\Models\AutherHistory;
+use App\Models\Withdraw;
 use Validator;
 use Session;
+use Mail;
 
 class AutherController extends Controller
 {
@@ -64,6 +67,7 @@ class AutherController extends Controller
                 if(Hash::check($request->password,$auther->password)){
                     Session::put('autherEmail',$request->email);
                     Session::put('autherName',$auther->name);
+                    Session::put('amount',$auther->amount);
                     return response()->json([
                         'status' => true,
                     ]);
@@ -176,6 +180,178 @@ class AutherController extends Controller
             Session::put('title',$request->title);
             Session::put('description',$request->description);
             return Redirect::to(url('/auther/writeNews?msg='.$error));
+        }
+    }
+
+    public function changepassword(){
+        return view('writer.changepassword');
+    }
+    public function changePasswordProcess(Request $request){
+        $valid = Validator::make($request->all(),["new_password" => "required","cnf_password" => "required"]);
+        if($valid->passes()){
+            if($request->new_password == $request->cnf_password){
+                $auther = Auther::where(['email'=>Session::get('autherEmail'),'approved'=>1])->get()->first();
+                $auther->password = Hash::make($request->new_password);
+                $auther-> save();
+                return response()->json([
+                    'status' => true,
+                    'msg' => "Password Changed Successfully!!"
+                ]);
+                
+            }else{
+                return response()->json([
+                    'status' => false,
+                    'msg' => "Enter Both Password Same!!"
+                ]);
+            }
+        }else{
+            return response()->json([
+                'status' => false,
+                'msg' => $valid->errors()->all()
+            ]);
+        }
+    }
+
+    public function forgetPassword(Request $request){
+        $auther = Auther::where('email',$request->email)->get()->first();
+        if($auther){
+            $to_name = $auther->name;
+            $to_email = $auther->email;
+            $data = ['name'=>$to_name,"email" => md5($auther->email)];
+            Mail::send('emails.forgotPasswordEmail', $data, function($message) use ($to_name, $to_email) {
+                $message->to($to_email, $to_name)
+                ->subject('Forgot Password Email');
+                $message->from('funtoos456@gmail.com','Instant News');
+            });
+            return response()->json([
+                'status'=> true,
+                'msg' => "Email Send To Your Registered Email."
+            ]);
+        }else{
+            return response()->json([
+                'status'=> false,
+                'msg' => "Something Went Wrong. Try Again!!"
+            ]);
+        }
+        
+    }
+
+    public function forgetPasswordProcess($email){
+        $auther = Auther::where('approved',1)->get();
+        // dd($auther);
+        foreach ($auther as $key => $value) {
+            if(md5($value->email) == $email){
+                return view('writer.forgetPasswordProcess');
+            }
+        }
+        return Redirect::to(url('/error'));
+    }
+
+    public function changeForgetPassword(Request $request){
+        $valid = Validator::make($request->all(),['new_password' => "required","cnf_password" => "required"]);
+        if($valid->passes()){
+            if($request->new_password == $request->cnf_password){
+                $auther = Auther::where('approved',1)->get();
+                foreach ($auther as $key => $value) {
+                    if(md5($value->email) == $request->email){
+                        $value->password = Hash::make($request->cnf_password);
+                        $value->save();
+                        return response()->json([
+                            'status' => true,
+                            'msg' => "Your Password Changed!!"
+                        ]);
+                    }
+                }
+                return response()->json([
+                    'status' => false,
+                    'msg' => "Something Went Wrong"
+                ]);
+            }else{
+                return response()->json([
+                    'status' => false,
+                    'msg' => "Enter Both Password Same!!"
+                ]);
+            }
+        }else{
+            return response()->json([
+                'status' => false,
+                'msg' => $valid->errors()->all()
+            ]);
+        }
+    }
+
+    public function coins(){
+        return view('writer.coins');
+    }
+
+    public function getAutherHistory($page){
+        $auther_id = Auther::where('email',Session::get('autherEmail'))->get()->first()->auther_id;
+        $history = AutherHistory::orderby('id','desc')->where('auther_id',$auther_id)->get();
+        $arr = array();
+        $categories = ['national','business','sports','world','politics','technology','startup','entertainment','miscellaneous','hatke','automobile'];
+        foreach ($history as $key => $value) {
+            if(in_array($value->category , $categories)){
+                $news = News::where('id',$value->news_id)->get()->first();
+            }else{
+                $news = TrendingNews::where('id',$value->news_id)->get()->first();
+            }
+            $arr2 = explode(',',$news->likes);
+            $arr1 = array('category' => $value->category,"title" => $news->title,"content" => $news->content,"likes" => count($arr2)-1 , "amount" => $value->amount);
+            array_push($arr,$arr1);
+        }
+        $arr4 = collect($arr)->forPage($page,5);
+        $data = array();
+        foreach ($arr4 as $key => $value) {
+            array_push($data,$value);
+        }
+        if(count($arr)){
+            return response()->json([
+                'status' => true,
+                'data' => $data
+            ]);
+        }else{
+            return response()->json([
+                'status' => false,
+                "msg" => "No Data Found!!"
+            ]);
+        }
+    }
+
+    public function withdrawProcess(Request $request){
+        $valid = Validator::make($request->all(),["mode"=>"required","mobile_no"=>"required","amount" => "required"]);
+        if($valid->passes()){
+            if($request->amount < 50){
+                return response()->json([
+                    'status' => false,
+                    'msg' => "Minimum Amount Transfer is 50rs!!"
+                ]);
+            }
+            $auther = Auther::where('email',Session::get('autherEmail'))->get()->first();
+            if($auther && ($auther->amount >= $request->amount)){
+                $auther->amount = $auther->amount - $request->amount;
+                $auther->save();
+                $withdraw = new Withdraw();
+                $withdraw->auther_id = $auther->auther_id;
+                $withdraw->name = $auther->name;
+                $withdraw->mode = $request->mode;
+                $withdraw->mobile_no = $request->mobile_no;
+                $withdraw->amount = $request->amount;
+                $withdraw->save();
+                return response()->json([
+                    'status' => true,
+                    'msg' => "Your Amount Credited to your bank in 12 hours!!"
+                ]);
+            }else{
+                return response()->json([
+                    'status' => false,
+                    'msg' => "Insufficient Balance!!"
+                ]);
+            }
+        }else{
+            return response()->json([
+                'status' => false,
+                'msg' => $valid->errors()->all()
+            ]);
         }
     }
     

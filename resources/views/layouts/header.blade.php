@@ -66,19 +66,7 @@
                           <span>Dashboard</span>
                       </a>
           </li>
-          <!-- <li class="sub-menu">
-            <a href="{{url('/addMatch')}}" class="">
-                          <i class="icon_document_alt"></i>
-                          <span>Add Match</span>
-                      </a>
-          </li>-->
           
-          <li>
-            <a class="" href="{{url('/authersPost')}}">
-                          <i class="icon_genius"></i>
-                          <span>Post By Author</span>
-                      </a>
-          </li>
           <li class="sub-menu">
             <a href="{{url('/category')}}" class="">
                           <i class="icon_table"></i>
@@ -91,6 +79,19 @@
                           <span>Authers</span>
                       </a>
           </li> 
+          <li class="sub-menu">
+            <a href="{{url('/withdraw')}}" class="">
+                          <i class="icon_document_alt"></i>
+                          <span>Withdraw</span>
+                      </a>
+          </li>
+          
+          <li>
+            <a class="" href="{{url('/authersPost')}}">
+                          <i class="icon_genius"></i>
+                          <span>Post By Author</span>
+                      </a>
+          </li>
           <li class="sub-menu">
             <a href="{{url('/registerAdmin')}}" class="">
                           <i class="icon_table"></i>

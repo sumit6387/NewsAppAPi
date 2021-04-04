@@ -30,13 +30,39 @@
                     </div>
                     <button class="btn btn-primary my-3">Login</button>
                     <span>
-                        <a href="{{url('/learner/become-auther')}}" class="btn btn-primary"  style="margin-left: 15%;">Become Writer</a>
+                      <a href="#" style="margin-left: 15%;" data-toggle="modal" data-target="#exampleModal">Forgot Password</a>
                     </span>
                     <br>
-                    <a href="#" style="margin-left: 15%;">Forgot Password</a>
+                    
                     </form>
                   </div>
                   <div class="col-md-2"></div>
+      </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Forget Password</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="{{ url('/auther/forgetPassword') }}" class="database_operation">
+              <div>
+                <label for="email">Email</label>
+                <input type="email" name="email" class="form-control" placeholder="Enter Registered Email" required>
+                {{ csrf_field() }}
+              </div>
+              <button class="btn btn-primary my-3">Send Email</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -58,6 +84,20 @@
                     }
                 });
                 return false;
+            });
+
+            $('.database_operation').submit(function(){
+              var data = $(this).serialize();
+              var url = $(this).attr('action');
+              $.post(url,data,function(data,status){
+                if(data.status){
+                  alert(data.msg);
+                  window.location.href= `{{ url('/auther/auther-login') }}`;
+                }else{
+                  alert(data.msg);
+                }
+              });
+              return false;
             });
         });
     </script>

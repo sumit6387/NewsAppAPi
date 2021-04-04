@@ -18,10 +18,25 @@
             <li class="nav-item active">
               <a class="nav-link" href="{{ url('/auther/dashboard') }}">Home</a>
             </li>
+
             <li class="nav-item">
               <a class="nav-link" href="{{ url('/auther/writeNews') }}">Write News</a>
             </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url('/auther/changepassword') }}">Change Password</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url('/auther/coins') }}">History</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url('/auther/withdraw') }}">Withdraw</a>
+            </li>
           </ul>
+          <span class="navbar-text" style="margin-right:5%;">
+            Amount : <span style="color: rgb(212, 38, 38);">{{ Session::get('amount') }}</span>
+          </span>
           <span class="navbar-text">
             <a href="{{ url('/auther/logout') }}" style="text-decoration: none;">Logout</a>
           </span>

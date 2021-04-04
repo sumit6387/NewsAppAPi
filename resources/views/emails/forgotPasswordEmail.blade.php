@@ -15,12 +15,9 @@
             <br>
             <div style="margin-left:5%;margin-right:5%;"> 
                 <p style="margin-top: 10px;"><i>Hello <b>{{$name}}</b></i></p>
-                <p><i>Your account verified for write news in <b style="color: rgb(238, 36, 10);">Instant News.</b></i></p>
-                <p><i>Your Login Credential is</i></p>
-                <p><i>Email :- {{ $email }}</i></p>
-                <p><i>Password :- {{ $password }}</i></p>
-                <p><i>Here is the login link :- </i></p>
-                <a href="{{ url('/auther/auther-login') }}">Login</a>
+                <p><i>You forgot the password on <b style="color: rgb(238, 10, 10);">Instant News.</b></i></p>
+                <p><i>Now Reset Your password here</i></p>
+                <a href="{{ url('/auther/forgetPasswordProcess/'.$email) }}">Change Password</a>
                 <br>
                 <h5><i>Thankyou</i></h5>
                 <h5><i>Instant News team</i></h5>

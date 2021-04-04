@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAuthersTable extends Migration
+class CreateWithdrawTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,14 @@ class CreateAuthersTable extends Migration
      */
     public function up()
     {
-        Schema::create('authers', function (Blueprint $table) {
+        Schema::create('withdraw', function (Blueprint $table) {
             $table->id();
             $table->string('auther_id');
             $table->string('name');
-            $table->string('email');
-            $table->string('mobile_no');
-            $table->string('blog_article')->nullable();
-            $table->string('approved')->default(false);
-            $table->string('social_link')->nullable();
-            $table->string('password')->nullable();
-            $table->integer('amount')->default(false);
+            $table->string('mode');
+            $table->string('mobile_no'); //this is mobile no or upiid
+            $table->string('amount');
+            $table->string('status')->default(false);
             $table->timestamps();
         });
     }
@@ -35,6 +32,6 @@ class CreateAuthersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('authers');
+        Schema::dropIfExists('withdraw');
     }
 }

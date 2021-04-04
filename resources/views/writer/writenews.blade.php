@@ -57,11 +57,13 @@
                 <label for="image">Image</label>
                 <input type="file" class="form-control" name="img">
             </div>
+
             <div>
-                <label for="desc">Description</label>
-                <textarea name="description" class="form-control" value="{{ $desc }}" style="height: 10%;" cols="30" rows="10"></textarea>
+                <label for="desc">Description   <span style="margin-left:550%;color:rgb(21, 125, 243);" id="length">0/70</span></label>
+                <textarea name="description" id="desc" class="form-control" value="{{ $desc }}" style="height: 10%;" cols="30" rows="10"></textarea>
+                <small>Maximum 70 words</small>
             </div>
-            <button class="btn btn-primary my-2">Submit</button>
+            <button class="btn btn-primary btn-block my-2">Submit</button>
         </form>
         </div>
         <div class="col-md-3"></div>
@@ -71,5 +73,23 @@
 
 
 @include('writer.footer')
+<script>
+    $(document).ready(function(){
+        $('.btn-block').click(function(){
+            $('#desc').prop('disabled',false);
+        });
+        $('#desc').on('input', function() {
+            var str = $(this).val();
+            var arr = str.split(' ');
+            var len = arr.length-1 + "/70";
+            if(arr.length > 70){
+                alert('You Can Not Write More Then 70 Words!')
+                $(this).prop('disabled',true);
+            }else{
+                $('#length').html(len);
+            }
+        });
+    });
+</script>
 </body>
 </html>

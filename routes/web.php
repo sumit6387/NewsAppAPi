@@ -12,6 +12,7 @@ Route::get('/',[AdminLoginController::Class , 'login']);
 Route::post('/loginPro' , [AdminLoginController::class , 'loginPro']);
 
 
+
 Route::group(['middleware' => "CheckAdmin"] , function(){
     Route::get('/dashboard' , [AdminController::class , 'dashboard']);
 
@@ -32,6 +33,16 @@ Route::group(['middleware' => "CheckAdmin"] , function(){
     Route::get('/editCategory/{category_id}',[AdminShowController::class,'editcategory']);
     Route::post('/editCategoryProcess',[AdminController::class,'editCategoryProcess']);
 
+    // author post 
+    Route::get('/authersPost',[AdminShowController::class , 'authersPost']);
+    Route::get('/getautherData/{page}',[AdminShowController::class , 'getautherData']);
+    Route::post('/approvePost',[AdminController::class , 'approvePost']);
+
+    // withdraw
+    Route::get('/withdraw',[AdminShowController::class , 'withdraw']);
+    Route::get('/getwithdrawData',[AdminShowController::class , 'getwithdrawData']);
+    Route::get('/withdrawDone/{withdrawId}',[AdminController::class , 'withdrawDone']);
+
     Route::get('/logout',[AdminLoginController::class , 'logout']);
 });
 
@@ -40,12 +51,21 @@ Route::view('/learner/become-auther','writer.become-writer');
 Route::get('/auther/auther-login',[AutherController::class ,'login']);
 Route::post('/learner/becomeAuther',[AutherController::class , 'becomeAuther']);
 Route::post('/auther/autherLogin',[AutherController::class , 'autherLogin']);
+Route::post('/auther/forgetPassword',[AutherController::class , 'forgetPassword']);
+Route::get('/auther/forgetPasswordProcess/{email}',[AutherController::class , 'forgetPasswordProcess']);
+Route::post('/auther/changeForgetPassword',[AutherController::class , 'changeForgetPassword']);
 
 Route::group(['middleware' => "CheckAuther","prefix" => "auther"],function(){
     Route::get('/dashboard',[AutherController::class,'dashboard']);
     Route::get('writeNews',[AutherController::class , 'writeNews']);
     Route::get('/logout',[AutherController::class , 'logout']);
     Route::post('/submit-post' ,[AutherController::class , 'submitPost']);
+    Route::get('/changepassword',[AutherController::class,'changepassword']);
+    Route::post('/changePasswordProcess',[Auther4Controller::class,'changePasswordProcess']);
+    Route::get('/coins',[AutherController::class , 'coins']);
+    Route::get('/getAutherHistory/{page}',[AutherController::class , 'getAutherHistory']);
+    Route::view('/withdraw','writer.withdraw');
+    Route::post('/withdrawProcess',[AutherController::class , 'withdrawProcess']);
 });
 Route::fallback(function(){
     return view('404');
