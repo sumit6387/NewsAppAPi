@@ -35,7 +35,7 @@
             </li>
           </ul>
           <span class="navbar-text" style="margin-right:5%;">
-            Amount : <span style="color: rgb(212, 38, 38);">{{ Session::get('amount') }}</span>
+            Amount : <span style="color: rgb(212, 38, 38);">{{ Session::get('amount') }}rs</span>
           </span>
           <span class="navbar-text">
             <a href="{{ url('/auther/logout') }}" style="text-decoration: none;">Logout</a>
