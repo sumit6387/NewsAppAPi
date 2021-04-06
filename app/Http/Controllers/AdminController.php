@@ -10,6 +10,7 @@ use App\Models\TrendingCategory;
 use App\Models\TrendingNews;
 use App\Models\AutherHistory;
 use App\Models\News;
+use App\Models\User;
 use App\Models\Withdraw;
 use Illuminate\Support\Str;
 use Mail;
@@ -18,7 +19,10 @@ use Validator;
 class AdminController extends Controller
 {
     public function dashboard(){
-        return view('index');
+        $data['users'] = User::get()->count();
+        $data['authers'] = Auther::where('approved',1)->get()->count();
+        $data['trendingNews'] = TrendingNews::where('status',1)->get()->count();
+        return view('index',$data);
     }
 
     public function acceptAutherRequest($auther_id){

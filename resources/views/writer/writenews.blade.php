@@ -40,9 +40,7 @@
                 if(Session::get('title')){
                     $title = Session::get('title');
                 }
-                if(Session::get('description')){
-                    $desc = Session::get('description');
-                }
+                
             @endphp
             <div>
                 <label for="title">Title</label>
@@ -59,8 +57,8 @@
             </div>
 
             <div>
-                <label for="desc">Description   <span style="margin-left:550%;color:rgb(21, 125, 243);" id="length">0/70</span></label>
-                <textarea name="description" id="desc" class="form-control" value="{{ $desc }}" style="height: 10%;" cols="30" rows="10"></textarea>
+                <label for="desc">Description  <span></span>  <span style="margin-left:550%;color:rgb(21, 125, 243);" id="length">0/70</span></label>
+                <textarea name="description" id="desc" class="form-control" value="" style="height: 10%;" cols="30" rows="10"></textarea>
                 <small>Maximum 70 words</small>
             </div>
             <button class="btn btn-primary btn-block my-2">Submit</button>
@@ -74,21 +72,26 @@
 
 @include('writer.footer')
 <script>
+    <?php
+        if(Session::get('description')){
+            $desc = Session::get('description');
+        }
+    ?>
     $(document).ready(function(){
-        $('.btn-block').click(function(){
-            $('#desc').prop('disabled',false);
-        });
+        var desc = `{{ $desc }}`;
+        $('#desc').val(desc);
+        console.log(desc)
         $('#desc').on('input', function() {
             var str = $(this).val();
             var arr = str.split(' ');
             var len = arr.length-1 + "/70";
             if(arr.length > 70){
                 alert('You Can Not Write More Then 70 Words!')
-                $(this).prop('disabled',true);
             }else{
                 $('#length').html(len);
             }
         });
+        
     });
 </script>
 </body>

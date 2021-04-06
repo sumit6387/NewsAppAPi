@@ -129,6 +129,12 @@ class AutherController extends Controller
     public function submitPost(Request $request){
         $valid = Validator::make($request->all(),["title" => "required" ,"img" => "required" ,"description"=>"required","sourceURL" => "required"]);
         if($valid->passes()){
+            $arr = explode(' ',$request->description);
+            if(count($arr) >70){
+                Session::put('title',$request->title);
+                Session::put('description',$request->description);
+                return Redirect::to(url('/auther/writeNews?msg=Enter Maximum 70 words!!'));
+            }
             if($request->category || $request->trendingCategory){
                 date_default_timezone_set("Asia/kolkata"); 
                 $time = date('h:i a');
@@ -236,7 +242,7 @@ class AutherController extends Controller
         
     }
 
-    public function forgetPasswordProcess($email){
+    public function forgetPasswordProcss($email){
         $auther = Auther::where('approved',1)->get();
         // dd($auther);
         foreach ($auther as $key => $value) {
