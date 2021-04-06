@@ -57,9 +57,9 @@
             </div>
 
             <div>
-                <label for="desc">Description  <span></span>  <span style="margin-left:550%;color:rgb(21, 125, 243);" id="length">0/70</span></label>
+                <label for="desc">Description  <span><small style="margin-left: 2%;color:red;">Maximum words between 60-70</small></span> <span style="color:rgb(21, 125, 243);" id="length">0/70</span></label>
                 <textarea name="description" id="desc" class="form-control" value="" style="height: 10%;" cols="30" rows="10"></textarea>
-                <small>Maximum 70 words</small>
+                
             </div>
             <button class="btn btn-primary btn-block my-2">Submit</button>
         </form>
