@@ -6,12 +6,12 @@
   <meta name="description" content="Matka App ">
   <link rel="shortcut icon" href="img/favicon.png">
   <title>Admin Login - Instant News</title>
-  <link href="{{url('css/bootstrap.min.css')}}" rel="stylesheet">
-  <link href="{{url('css/bootstrap-theme.css')}}" rel="stylesheet">
-  <link href="{{url('css/elegant-icons-style.css')}}" rel="stylesheet" />
-  <link href="{{url('css/font-awesome.css')}}" rel="stylesheet" />
-  <link href="{{url('css/style.css')}}" rel="stylesheet">
-  <link href="{{url('css/style-responsive.css')}}" rel="stylesheet" />
+  <link href="{{url('public/css/bootstrap.min.css')}}" rel="stylesheet">
+  <link href="{{url('public/css/bootstrap-theme.css')}}" rel="stylesheet">
+  <link href="{{url('public/css/elegant-icons-style.css')}}" rel="stylesheet" />
+  <link href="{{url('public/css/font-awesome.css')}}" rel="stylesheet" />
+  <link href="{{url('public/css/style.css')}}" rel="stylesheet">
+  <link href="{{url('public/css/style-responsive.css')}}" rel="stylesheet" />
 </head>
 
 <body class="login-img3-body">
@@ -37,7 +37,7 @@
       </div>
     </form>
   </div>
-  <script src="{{url('js/jquery.js')}}"></script>
+  <script src="{{url('public/js/jquery.js')}}"></script>
   <script>
         $(document).ready(function(){
             $('.database_operation').submit(function(){
