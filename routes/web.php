@@ -37,6 +37,7 @@ Route::group(['middleware' => "CheckAdmin"] , function(){
     Route::get('/authersPost',[AdminShowController::class , 'authersPost']);
     Route::get('/getautherData/{page}',[AdminShowController::class , 'getautherData']);
     Route::post('/approvePost',[AdminController::class , 'approvePost']);
+    Route::get('/deleteAuthersPost/{news_id}/{category}',[AdminController::class , 'deletePost']);
 
     // withdraw
     Route::get('/withdraw',[AdminShowController::class , 'withdraw']);

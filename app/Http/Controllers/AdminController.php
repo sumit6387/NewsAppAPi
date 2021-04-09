@@ -146,4 +146,20 @@ class AdminController extends Controller
         }
     }
 
+    public function deletePost($news_id,$category){
+            $categories = ['national','business','sports','world','politics','technology','startup','entertainment','miscellaneous','hatke','automobile'];
+            if(in_array($category , $categories)){
+                $news = News::where('id',$news_id)->get()->first();
+            }else{
+                $news = TrendingNews::where('id',$news_id)->get()->first();
+            }
+            if($news){
+                $news->status = 2;
+                $news->save();
+                return Redirect::to(url('/authersPost'));
+            }else{
+                return Redirect::to(url('/authersPost'));
+            }
+    }
+
 }
