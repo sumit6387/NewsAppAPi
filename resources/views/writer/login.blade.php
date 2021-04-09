@@ -13,11 +13,11 @@
     </style>
   </head>
   <body>
-    <div style="margin:10% 30% 30% 30%;background-color:rgb(152, 200, 255);border-radius:25px;">
-      <h2 class="text-center">Auther Login</h2>
+    <div style="margin:10% 15% 30% 25%;background-color:rgb(152, 200, 255);border-radius:25px;">
+      <h3 class="text-center">Auther Login</h3>
       <div class="row">
-                  <div class="col-md-2"></div>
-                  <div class="col-md-8">
+                  <div class="col-md-1"></div>
+                  <div class="col-md-10">
                     <form action="{{ url('/auther/autherLogin') }}" id="database_operation" style="margin-bottom: 10%;">
                       <div>
                           <label for="email">Email:</label>
@@ -36,7 +36,7 @@
                     
                     </form>
                   </div>
-                  <div class="col-md-2"></div>
+                  <div class="col-md-1"></div>
       </div>
     </div>
     <!-- Modal -->

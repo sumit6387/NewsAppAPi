@@ -39,7 +39,7 @@
           <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="profile-ava">
-                                <img alt="" style="height:20px;width:20px;" src="{{url('img/user_img.webp')}}">
+                                <img alt="" style="height:20px;width:20px;" src="{{url('public/img/user_img.webp')}}">
                             </span>
                             @if(Session::has('name'))
                             <span class="username">{{Session::get('name')}}</span>
