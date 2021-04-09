@@ -8,12 +8,12 @@
   <link rel="shortcut icon" href="img/favicon.png">
 
   <title>{{$title}}</title>
-  <link href="{{url('css/bootstrap.min.css')}}" rel="stylesheet">
-  <link href="{{url('css/bootstrap-theme.css')}}" rel="stylesheet">
-  <link href="{{url('css/elegant-icons-style.css')}}" rel="stylesheet" />
-  <link href="{{url('css/font-awesome.min.css')}}" rel="stylesheet" />
-  <link href="{{url('css/style.css')}}" rel="stylesheet">
-  <link href="{{url('css/style-responsive.css')}}" rel="stylesheet" />
+  <link href="{{url('public/css/bootstrap.min.css')}}" rel="stylesheet">
+  <link href="{{url('public/css/bootstrap-theme.css')}}" rel="stylesheet">
+  <link href="{{url('public/css/elegant-icons-style.css')}}" rel="stylesheet" />
+  <link href="{{url('public/css/font-awesome.min.css')}}" rel="stylesheet" />
+  <link href="{{url('public/css/style.css')}}" rel="stylesheet">
+  <link href="{{url('public/css/style-responsive.css')}}" rel="stylesheet" />
   
 </head>
 
