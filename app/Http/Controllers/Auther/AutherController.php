@@ -242,7 +242,7 @@ class AutherController extends Controller
         
     }
 
-    public function forgetPasswordProcss($email){
+    public function forgetPasswordProcess($email){
         $auther = Auther::where('approved',1)->get();
         // dd($auther);
         foreach ($auther as $key => $value) {
