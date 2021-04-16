@@ -41,6 +41,7 @@ class NewsController extends Controller
     public function getNews(Request $req, $category, $page)
     {
         $news = News::orderby('id', 'desc')->where('category', $category)->get();
+        return $news;
         if (count($news)) {
             $newsArr = array();
             $user_id = User::where('token', $req->header('Authorization'))->get()->first()->id;
@@ -114,7 +115,8 @@ class NewsController extends Controller
         $token = $request->header('Authorization');
         $user = User::where('token', $token)->get()->first();
         $news = News::where('id', $request->news_id)->get()->first();
-        if ($news) {
+        $trending_news = TrendingNews::where('id', $request->news_id)->get()->first();
+        if ($news || $trending_news) {
             if ($user->bookmarks == null) {
                 $user->bookmarks = $request->news_id;
                 $user->save();
@@ -147,7 +149,8 @@ class NewsController extends Controller
         $token = $request->header('Authorization');
         $user = User::where('token', $token)->get()->first();
         $news = News::where('id', $request->news_id)->get()->first();
-        if ($news) {
+        $trending_news = TrendingNews::where('id', $request->news_id)->get()->first();
+        if ($news || $trending_news) {
             $news = explode(',', $user->bookmarks);
             if (in_array($request->news_id, $news)) {
                 $res = array_diff($news, [$request->news_id]);

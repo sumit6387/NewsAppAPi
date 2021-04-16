@@ -9,4 +9,5 @@ class TrendingNews extends Model
 {
     use HasFactory;
     protected $table = "trending_news";
+    public $incrementing = false;
 }

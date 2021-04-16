@@ -23,7 +23,7 @@ class CreateTrendingNewsTable extends Migration
             $table->string('sourceURL');
             $table->string('imgsrc');
             $table->string('status')->default(false);
-            $table->string('writtenBy')->nullable();
+            $table->string('writtenBy')->nullable(); //user_id
             $table->longText('likes')->nullable();
             $table->unique('id');
             $table->timestamps();
