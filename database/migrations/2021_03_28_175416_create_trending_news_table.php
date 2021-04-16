@@ -14,7 +14,7 @@ class CreateTrendingNewsTable extends Migration
     public function up()
     {
         Schema::create('trending_news', function (Blueprint $table) {
-            $table->id();
+            $table->string('id')->uniqid;
             $table->string('category')->default('By This App');
             $table->longText('title');
             $table->string('author');
@@ -25,6 +25,7 @@ class CreateTrendingNewsTable extends Migration
             $table->string('status')->default(false);
             $table->string('writtenBy')->nullable();
             $table->longText('likes')->nullable();
+            $table->unique('id');
             $table->timestamps();
         });
     }
