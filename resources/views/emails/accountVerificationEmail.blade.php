@@ -24,6 +24,8 @@
                 <br>
                 <h5><i>Thankyou</i></h5>
                 <h5><i>Instant News team</i></h5>
+                <br>
+                <br>
             </div>
         </div>
 </body>
