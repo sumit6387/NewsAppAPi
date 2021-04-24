@@ -250,7 +250,7 @@ class AutherController extends Controller
         } else {
             return response()->json([
                 'status' => false,
-                'msg' => "Something Went Wrong. Try Again!!",
+                'msg' => "Enter Registered Email!!",
             ]);
         }
 
